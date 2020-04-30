@@ -1,107 +1,126 @@
-// the code adds an li when you click like
-// so the click event has a create <li></li> function in side of it. 
-// make an abstracted function that does this. pass in event.target
-// follow code below for like button
-//const upVoteButtons = document.querySelectorAll(".up-vote")
 
-// upVoteButtons.forEach(function(button){
-//   button.addEventListener("click", function(event){
-//     const parentLi = event.target.parentNode
-//     const span = parentLi.querySelector('span')
+// many click listeners needed 
+// put it on the body or document and then 
+// event target === if else will work out
+const likeList = document.querySelector('.likes')
+let likeCount = {}
+// good way to keep track of likes 
+// {
+// a: 3 likes,
+// b: 8 likes 
+// }
 
-//     let currentScore = parseInt(span.textContent)
-//     const newScore = currentScore + 1
+document.addEventListener('DOMContentLoaded', () => {
+  console.log('DOM fully loaded and parsed');
+  // startTimer()
+
+let timer = setInterval(() => {
+    incrementCounter(1)
+  }, 1000)
+
+
+  document.addEventListener('click', (e) => {
+
+  // for likes need to check if it exists 
+  // if it does increment if not make it.  
+  
+    switch (event.target.id) {
+      case 'minus':
+        incrementCounter(-1)
+        break;
+  
+      case 'plus':
+        incrementCounter(1)
+      break;
+
+      case 'heart':
+        const counter = document.getElementById('counter')
+        let currentNum = counter.textContent
+  
+        if (likeCount[currentNum]){
+          likeCount[currentNum]++
+          const li = document.querySelector(`[data-number="${currentNum}"]`)
+          li.textContent = `${currentNum} has been liked times ${likeCount[currentNum]} 🍑⛄`
+  
+        } else {
+          likeCount[currentNum] = 1
+          const li = document.createElement('li')
+          li.dataset.number = currentNum
+          li.textContent = `${currentNum} has been liked! 🍑` 
+          likeList.append(li)
+        }
+      break;
+
+      case 'pause':
+        clearInterval(timer)
     
-//     span.textContent = newScore
+        document.getElementById('minus').disabled = true
+        document.getElementById('plus').disabled = true
+        document.getElementById('heart').disabled = true
+        document.getElementById('submit').disabled = true
+        // only works for buttons
+        
+        event.target.textContent = 'Resume'
+        event.target.id = 'resume'
+        console.log(event.target)
 
-// we need to target the span inside the li to get the like counter to go up. 
-{/* <li><span></span></li> */}
+        break;
 
-document.addEventListener('DOMContentLoaded', (event) => {
-  console.log("dom running")
+      case 'resume':
+        timer = setInterval(() => {
+          incrementCounter(1)
+        }, 1000)
+
+        document.getElementById('minus').disabled = false
+        document.getElementById('plus').disabled = false
+        document.getElementById('heart').disabled = false
+        document.getElementById('submit').disabled = false
+        event.target.textContent = 'Pause'
+        event.target.id = 'pause'
+        console.log(event.target)
+
+      break;
   
-  submitComment()
-  start()
-  increase(num, i, isPaused)
-  // buttonClicked() 
+      default: 
+      "that didn't work"
+        break;
+    }
+  })
   
+  document.addEventListener('submit', (e) => {
+    e.preventDefault()
 
+    // console.log(event.target)
+
+    const comment = event.target.comment.value 
+    // console.log(comment)
+    const p = document.createElement('p')
+    p.textContent = comment
+    const list = document.getElementById('list')
+
+    list.append(p)
+    event.target.reset()
+
+
+  })
 
 });
 
-// function startStop () {
-//   if {
-//     isPaused = true;
-//     pauseButton.textContent = "resume"
-//   } else {
-//     e.preventDefault();
-//     isPaused = false;
-//     pauseButton.textContent = "pause"
-//   }
-// }
-
-const bodyTag = document.getElementsByTagName('body')
-
-// function buttonClicked () {
-//   bodyTag.addEventListener("click", function(e) {
-//     console.log(e.target)
-//   // if click it stops increase function
-//       // button.textContent = "resume"
-//       // 
-//   // else 
-//     // starts increase function 
-//     // button.textContent = "pause"
-//   let pauseButton = document.getElementById('pause')
-//     if (e.target.id === "pause") {
-//       e.preventDefault();
-//       if {
-//         isPaused = true;
-//         pauseButton.textContent = "resume"
-//       } else {
-//         e.preventDefault();
-//         isPaused = false;
-//         pauseButton.textContent = "pause"
-//       }
-
-//     // } else if {
-      
-//     // }
-
-//   })
-// }
-
-
-
-function submitComment() {
-  document.querySelector('#submit').addEventListener("click", function(event){
-    event.preventDefault();
-    // console.log(event.target)
-    let div = document.querySelector('#list')
-    let p = document.createElement('p')
-    let commentValue = document.querySelector('#comment-input').value
-    p.textContent = commentValue
-    div.append(p)
-    document.querySelector('#comment-input').value = ""
-    
-  })
-
-}
-
-let i = 0;
-let num = document.getElementById('counter');
-let isPaused = false;
-
-function start() {
-  setInterval(increase, 1000);
+function incrementCounter (n) {
+  const counter = document.getElementById('counter')
+  let currentNum = parseInt(counter.textContent)
+  let newNum = currentNum + n
+  counter.textContent = parseInt(newNum)
 }
 
 
-function increase() {
-    if (!isPaused) {
-      i = i + 1;
-      num.textContent = i;
-    }
-} 
+// As a user, I should see the timer increment every second once the page has loaded.
+// As a user, I can manually increment and decrement the counter using the plus and minus buttons.
+// As a user, I can 'like' an individual number of the counter. I should see count of the number of 'likes' associated with that number.
+// As a user, I can pause the counter, which should
+// pause the counter
+// disable all buttons except the pause button
+// the pause button should then show the text "resume."
+// When 'resume' is clicked, it should restart the counter and re-enable the buttons.
 
-
-
+// As a user, I can leave comments on my gameplay
